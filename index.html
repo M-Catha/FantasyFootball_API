@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css\index.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+        <title>Mansfield Football Pool</title>
+    </head>
+    <body>
+
+        <div class="container">
+            <h1>Schedule Check Sheet</h1>
+            <h3>MANSFIELDFOOTBALLPOOL.COM</h3>
+            <h3 id="weekNumber"></h3>
+            <div id="noJSON">No JSON was returned!</div>
+
+            <div class="submitButtons">
+	            <select id="gameWeek" class="getWeek">
+	                <option value="1">Week 1</option>
+	                <option value="2">Week 2</option>
+	                <option value="3">Week 3</option>
+	                <option value="4">Week 4</option>
+	                <option value="5">Week 5</option>
+	                <option value="6">Week 6</option>
+	                <option value="7">Week 7</option>
+	                <option value="8">Week 8</option>
+	                <option value="9">Week 9</option>
+	                <option value="10">Week 10</option>
+	                <option value="11">Week 11</option>
+	                <option value="12">Week 12</option>
+	                <option value="13">Week 13</option>
+	                <option value="14">Week 14</option>
+	                <option value="15">Week 15</option>
+	                <option value="16">Week 16</option>
+	                <option value="17">Week 17</option>
+	            </select> 
+	            <button type="submit" id="getButton" class="btn btn-info"><i class="fa fa-cog"></i> Get Schedule</button>
+	        </div>
+    
+            <table id="gameDataTable" class="table bordered">
+            	<th class="title">Away Team</th>
+            	<th class="title">Home Team</th>
+            	<th class="title">Time (EST)</th>
+            	<th class="title">Winner</th>
+            </table>
+
+        </div>
+
+<script type="text/javascript" src="js\index.js"></script>
+
+</html>

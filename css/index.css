@@ -1,0 +1,61 @@
+td {
+    font-size:15px;
+    vertical-align:middle !important;
+    text-align:center;
+}
+
+.bordered, .bordered td {
+    border-bottom:1px black solid;
+}
+
+.printRow {
+    border:1px black solid;
+}
+
+.container {
+    text-align:center;
+    margin:0 auto;
+}
+
+.title {
+    text-align:center;
+    background: #4c4c4c;
+    color:white;
+}
+
+.homeBox, .awayBox {
+    float:left;
+}
+
+.highlight {
+    background-color:yellow;
+}
+
+.printButton, .getButton {
+    margin: 10px 0;
+}
+
+.logo {
+    height:40px;
+    padding-right:10px;
+}
+
+.teamName {
+    font-weight:bolder;
+    font-size:1.0em;
+}
+
+#noJSON {
+    display:none;
+    background: #00ff7f;
+    color:#228b22;
+    border:2px dashed #228b22;
+}
+
+#gameDataTable {
+    margin-top:10px;
+}
+
+#weekNumber {
+    font-size:15px;
+}
