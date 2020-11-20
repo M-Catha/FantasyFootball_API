@@ -199,9 +199,14 @@ var teams = [
             imageURL:"http://imgur.com/yF3SrUf.png"
         },
         {
-            abbr:"LA",
+            abbr:"LAR",
             name:"Rams",
-            imageURL:"http://imgur.com/gv8K0QZ.png"
+            imageURL:"https://imgur.com/9NQi4s3.png"
+        },
+        {
+            abbr:"LV",
+            name:"Raiders",
+            imageURL:"http://imgur.com/aOfdECt.png"
         },
         {
             abbr:"MIA",
@@ -232,11 +237,6 @@ var teams = [
             abbr:"NYJ",
             name:"Jets",
             imageURL:"http://imgur.com/KSapqdr.png"
-        },
-        {
-            abbr:"OAK",
-            name:"Raiders",
-            imageURL:"http://imgur.com/aOfdECt.png"
         },
         {
             abbr:"PHI",
@@ -276,7 +276,7 @@ var teams = [
         {
             abbr:"WAS",
             name:"Redskins",
-            imageURL:"http://imgur.com/93ChS2V.png"
+            imageURL:"https://imgur.com/ay18QPQ.png"
         },
         {
         	abbr:"TIE",
