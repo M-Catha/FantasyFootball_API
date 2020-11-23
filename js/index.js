@@ -1,14 +1,51 @@
-var getEventData = function () {
+var gameData;
 
+$("#getButton").prop("disabled", true);
+$("#gameWeek").prop("disabled", true);
+
+function displayData() {
+    
 	// Delete previous entries
 	$("tr").remove(".printRow");
 	$("tr").remove(".matchupRow");
-	$("span").remove(".weekSpace");
+    $("span").remove(".weekSpace")
 	
 	// Get selected week from drop down
-	var week = $("#gameWeek").val().toString();
+    var week = $("#gameWeek").val().toString();
 
-	// Get team mascot for team
+    // Get the day of the week for each game
+    function convToDate(date) {
+        var dateToConvert = new Date(date);
+        var day = dateToConvert.getUTCDay();
+
+        switch(day) {
+            case 0:
+                return "Sunday";
+            case 1:
+                return "Monday";
+            case 4:
+                return "Thursday";
+            case 6:
+                return "Saturday"
+        }
+    }
+
+    // Get the day of the week for each game
+    function formatScore(awayScore, homeScore) {
+        var formattedScore;
+
+        if (awayScore === "" || homeScore === "") {
+            formattedScore = '';
+        } else {
+            formattedScore = awayScore >= homeScore ?
+            awayScore + " - " + homeScore :
+            homeScore + " - " + awayScore;
+        }
+
+        return formattedScore;
+    }
+    
+    // Get team mascot for team
 	function getTeamMascot(abbr) {
 
 		teamMascot = "";
@@ -16,8 +53,8 @@ var getEventData = function () {
 			if (abbr === teamName.abbr) {
 				teamMascot = teamName.name;
 			}
-			
-		})
+        });
+        
 		return teamMascot;
 	}
 	
@@ -26,264 +63,279 @@ var getEventData = function () {
 		
 		teamLogo = "";
 		teams.forEach(function(teamName) {
-
 			if (abbr === teamName.abbr) {
 				teamLogo = teamName.imageURL;
 			}
-		})
+        });
+        
 		return teamLogo;
-	}
+    }
+    
+    function addAllClasses() {
+        $(".awayBox").addClass("awayBox");
+        $(".homeBox").addClass("homeBox");
+        $(".logo").addClass("logo");
+        $(".matchupRow").addClass("matchupRow");
+        $(".printRow").addClass("printRow");
+        $(".teamName").addClass("teamName");
+    }
+    
+    gameData.Schedule.forEach(function(game) {
+
+        if(game["gameWeek"] === week) {
+
+            // Isolate useful variables
+            var gameDate = game["gameDate"];
+            var gameTime = game["gameTimeET"];
+            var awayTeam = game["awayTeam"];
+            var homeTeam = game["homeTeam"];
+            var homeScore = parseInt(game["homeScore"]);
+            var awayScore = parseInt(game["awayScore"]);
+            var winner = game["winner"];
+
+
+            // Append data to table
+            $("#gameDataTable").append(
+                "<tr class='matchupRow'>" + 
+                    "<td>" + 
+                        "<img class='logo' src='" + getTeamLogo(awayTeam) + "'/>" + "<input class='awayBox' type='checkbox'><span class='teamName'>" + getTeamMascot(awayTeam) + "</span>" +
+                    "</td>" +
+                    "<td>" +
+                        "<img class='logo' src='" + getTeamLogo(homeTeam) + "'/>" + "<input class='homeBox' type='checkbox'><span class='teamName'>" + getTeamMascot(homeTeam) + "</span>" +
+                    "</td>" +
+                    "<td>" + 
+                        convToDate(gameDate) + " " + gameTime + 
+                    "</td>" +
+                    "<td>" +
+                        formatScore(awayScore, homeScore) +
+                    "</td>" +
+                    "<td>" +
+                        "<img class='logo' src='" + getTeamLogo(winner) + "'/>" + "<span class='teamName'>" + getTeamMascot(winner) + "</span>" +
+                    "</td>" + 
+                "</tr>"
+            )}
+     });
+
+    // Append the print row at the bottom
+    $("#gameDataTable").append(
+    "<tr class='printRow'>" +
+        "<td colspan='5'>Total Points Scored On The Last Game Of the Sheet  " + 
+        "<input type='text'>" +
+            "<div class='printButton'><button class='btn btn-info' onClick='window.print()';><i class='fa fa-print'></i> Print Schedule</button>" + 
+        "</div>" + 
+        "</td>" + 
+    "</tr>"
+    )
+
+    addAllClasses();
+
+    // Add title based on which week is selected
+    $("#weekNumber").append("<span class='weekSpace'>Week " + week + " Schedule</span");
+
+    // Toggle highlighting boxes
+    $(".homeBox").on("click", function() {
+        $(this).parent().toggleClass("highlight");
+    });
+        
+    $(".awayBox").on("click", function() {
+        $(this).parent().toggleClass("highlight");
+    });
+}
+
+var getEventData = function () {
+    var apiURL = "https://www.fantasyfootballnerd.com/service/schedule/json/w867b9rnzfx3/";
 
 	// Call API and format data into table
 	$.ajax({
 		method: "GET",
-		url: "http://www.fantasyfootballnerd.com/service/schedule/json/w867b9rnzfx3/",
+		url: apiURL,
 		dataType: 'json',
 		success: function(json) {
-
 			if (json) {
-							
-				json.Schedule.forEach(function(game) {
-
-					if(game["gameWeek"] === week) {
-
-						// Isolate useful variables
-						var gameDate = game["gameDate"];
-						var gameTime = game["gameTimeET"];
-						var awayTeam = game["awayTeam"];
-						var homeTeam = game["homeTeam"];
-						var winner = game["winner"];
-
-
-						// Append data to table
-						$("#gameDataTable").append(
-							"<tr class='matchupRow'><td><img class='logo' src='" + getTeamLogo(awayTeam) + "'/>" + "<input class='awayBox' type='checkbox'><span class='teamName'>" + getTeamMascot(awayTeam) + "</span></td>" +
-							"<td><img class='logo' src='" + getTeamLogo(homeTeam) + "'/>" + "<input class='homeBox' type='checkbox'><span class='teamName'>" + getTeamMascot(homeTeam) + "</span></td>" +
-							"<td>" + convToDate(gameDate) + " " + gameTime + "</td>" +
-							"<td><img class='logo' src='" + getTeamLogo(winner) + "'/>" + "<span class='teamName'>" + getTeamMascot(winner) + "</span></td></tr>"
-							)
-					}
-				})
-
-				// Append the print row at the bottom
-				$("#gameDataTable").append(
-				"<tr class='printRow'>" +
-					"<td colspan='4'>Total Points Scored On The Last Game Of the Sheet  " + 
-					"<input type='text'>" +
-						"<div class='printButton'><button class='btn btn-info' onClick='window.print()';><i class='fa fa-print'></i> Print Schedule</button>" + 
-					"</div>" + 
-					"</td>" + 
-				"</tr>"
-				)
-
-				// Add title based on which week is selected
-				$("#weekNumber").append("<span class='weekSpace'>Week " + week + " Schedule</span");
-
-				// Toggle highlighting boxes
-				$(".homeBox").on("click", function() {
-		    		$(this).parent().toggleClass("highlight");
-				});
-		            
-				$(".awayBox").on("click", function() {
-		    		$(this).parent().toggleClass("highlight");
-				});
-					
+                    gameData = json;
+        
+                $("#getButton").prop("disabled", false);
+                $("#gameWeek").prop("disabled", false);
 			// If no JSON is returned
 			} else {
 				$("#noJSON").css("display", "block");
 			}
 	
 		}
-	 })
+     });
+    $("#getButton").prop("disabled", false);
+    $("#gameWeek").prop("disabled", false);
 }
 
-// Run geteventData function when submit button is clicked
-$("#getButton").click(getEventData);
-
-// Get the day of the week for each game
-function convToDate(date) {
-	var dateToConvert = new Date(date);
-	var day = dateToConvert.getUTCDay();
-
-	switch(day) {
-		case 0:
-			return "Sunday";
-		case 1:
-			return "Monday";
-		case 4:
-			return "Thursday";
-		case 6:
-			return "Saturday"
-	}
-}
+// Display data for the week selected
+$("#getButton").click(displayData);
 
 // All team info
 var teams = [
         {
             abbr:"ARI",
             name:"Cardinals",
-            imageURL:"http://imgur.com/PQGVTGt.png"
+            imageURL:"images/Cardinals.png"
         }, 
         {
             abbr:"ATL",
             name:"Falcons",
-            imageURL:"http://imgur.com/Zz3I5nN.png"
+            imageURL:"images/Falcons.png"
         },
         {
             abbr:"BAL",
             name:"Ravens",
-            imageURL:"http://imgur.com/w3XXZde.png"
+            imageURL:"images/Ravens.png"
         },
         {
             abbr:"BUF",
             name:"Bills",
-            imageURL:"http://imgur.com/GHKLppi.png"
+            imageURL:"images/Bills.png"
         },{
             abbr:"CAR",
             name:"Panthers",
-            imageURL:"http://imgur.com/xQAl8h1.png"
+            imageURL:"images/Panthers.png"
         },
         {
             abbr:"CHI",
             name:"Bears",
-            imageURL:"http://imgur.com/VsfZwgg.png"
+            imageURL:"images/Bears.png"
         },
         {
             abbr:"CIN",
             name:"Bengals",
-            imageURL:"http://imgur.com/RgNcuIa.png"
+            imageURL:"images/Bengals.png"
         },
         {
             abbr:"CLE",
             name:"Browns",
-            imageURL:"http://imgur.com/gkTISXH.png"
+            imageURL:"images/Browns.png"
         },
         {
             abbr:"DAL",
             name:"Cowboys",
-            imageURL:"http://imgur.com/WdQKNvB.png"
+            imageURL:"images/Cowboys.png"
         },
         {
             abbr:"DEN",
             name:"Broncos",
-            imageURL:"http://imgur.com/kzTbzIc.png"
+            imageURL:"images/Broncos.png"
         },
         {
             abbr:"DET",
             name:"Lions",
-            imageURL:"http://imgur.com/a4msPbs.png"
+            imageURL:"images/Lions.png"
         },
         {
             abbr:"GB",
             name:"Packers",
-            imageURL:"http://imgur.com/KqW5RQ7.png"
+            imageURL:"images/Packers.png"
         },
         {
             abbr:"HOU",
             name:"Texans",
-            imageURL:"http://imgur.com/sCfdZew.png"
+            imageURL:"images/Texans.png"
         },
         {
             abbr:"IND",
             name:"Colts",
-            imageURL:"http://imgur.com/NOeF8oH.png"
+            imageURL:"images/Colts.png"
         },
         {
             abbr:"JAC",
             name:"Jaguars",
-            imageURL:"http://imgur.com/kxmoYeP.png"
+            imageURL:"images/Jaguars.png"
         },
         {
             abbr:"KC",
             name:"Chiefs",
-            imageURL:"http://imgur.com/yF3SrUf.png"
+            imageURL:"images/Chiefs.png"
+        },
+        {
+            abbr:"LAC",
+            name:"Chargers",
+            imageURL:"images/Chargers.png"
         },
         {
             abbr:"LAR",
             name:"Rams",
-            imageURL:"https://imgur.com/9NQi4s3.png"
+            imageURL:"images/Rams.png"
         },
         {
             abbr:"LV",
             name:"Raiders",
-            imageURL:"http://imgur.com/aOfdECt.png"
+            imageURL:"images/Raiders.png"
         },
         {
             abbr:"MIA",
             name:"Dolphins",
-            imageURL:"http://imgur.com/fsKewgJ.png"
+            imageURL:"images/Dolphins.png"
         },
         {
             abbr:"MIN",
             name:"Vikings",
-            imageURL:"http://imgur.com/N0QB7sO.png"
+            imageURL:"images/Vikings.png"
         },
         {
             abbr:"NE",
             name:"Patriots",
-            imageURL:"http://imgur.com/SVfCQEm.png"
+            imageURL:"images/Patriots.png"
         },
         {
             abbr:"NO",
             name:"Saints",
-            imageURL:"http://imgur.com/yRUP1YP.png"
+            imageURL:"images/Saints.png"
         },
         {
             abbr:"NYG",
             name:"Giants",
-            imageURL:"http://imgur.com/d2Z5Y19.png"
+            imageURL:"images/Giants.png"
         },
         {
             abbr:"NYJ",
             name:"Jets",
-            imageURL:"http://imgur.com/KSapqdr.png"
+            imageURL:"images/Jets.png"
         },
         {
             abbr:"PHI",
             name:"Eagles",
-            imageURL:"http://imgur.com/DSpKud1.png"
+            imageURL:"images/Eagles.png"
         },
         {
             abbr:"PIT",
             name:"Steelers",
-            imageURL:"http://imgur.com/IXiaULq.png"
-        },
-        {
-            abbr:"SD",
-            name:"Chargers",
-            imageURL:"http://imgur.com/rIfP0Yy.png"
+            imageURL:"images/Steelers.png"
         },
          {
             abbr:"SEA",
             name:"Seahawks",
-            imageURL:"http://imgur.com/RguqcK6.png"
+            imageURL:"images/Seahawks.png"
         },
         {
             abbr:"SF",
             name:"49ers",
-            imageURL:"http://imgur.com/ygxVQsT.png"
+            imageURL:"images/49ers.png"
         },
         {
             abbr:"TB",
             name:"Buccaneers",
-            imageURL:"http://imgur.com/xa7qeYC.png"
+            imageURL:"images/Bucs.png"
         },
         {
             abbr:"TEN",
             name:"Titans",
-            imageURL:"http://imgur.com/gg7mhdS.png"
+            imageURL:"images/Titans.png"
         },
         {
             abbr:"WAS",
-            name:"Redskins",
-            imageURL:"https://imgur.com/ay18QPQ.png"
+            name:"Washington",
+            imageURL:"images/Washington.png"
         },
         {
         	abbr:"TIE",
         	name:"Tie",
-        	imageURL:"http://i.imgur.com/6u9ouiY.jpg"
+        	imageURL:"images/Tie.jpg"
         }
     ];
 
-
-
+$(document).ready(getEventData);
