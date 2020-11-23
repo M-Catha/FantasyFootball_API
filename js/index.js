@@ -118,7 +118,7 @@ function displayData() {
     "<tr class='printRow'>" +
         "<td colspan='5'>Total Points Scored On The Last Game Of the Sheet  " + 
         "<input type='text'>" +
-            "<div class='printButton'><button class='btn btn-info' onClick='window.print()';><i class='fa fa-print'></i> Print Schedule</button>" + 
+            "<div class='printButton'><button class='btn btn-primary' onClick='window.print()';><i class='fa fa-print'></i> Print Schedule</button>" + 
         "</div>" + 
         "</td>" + 
     "</tr>"
