@@ -7,4 +7,4 @@ Previously implemented using the Fantasy Football Nerd API, but it no longer all
 
 Live demo seen here:
 
-[Github Page](https://m-catha.github.io/FantasyFootball_API/)
+[Github Pages](https://m-catha.github.io/FantasyFootball_API/)
